@@ -43,5 +43,6 @@ Synthetic healthcare claims dataset created
 for educational and portfolio purposes.
 
 ## Dashboard
+## Dashboard
 
-[Dashboard Screenshot]
+![Healthcare Claims Automation Dashboard](Screenshots/dashboard.png)

@@ -1,0 +1,142 @@
+table Dim_Date
+	lineageTag: f172009e-770c-4bb8-a6ab-66a37e2078c1
+
+	measure 'Total Claims' =
+			
+			DISTINCTCOUNT(Fact_Claims[Claim_ID])
+		formatString: 0
+		lineageTag: f16bda3f-118d-4803-bc3a-d13a343512bf
+
+	measure 'Auto-Processed Claims' =
+			
+			CALCULATE(
+			    [Total Claims],
+			    Fact_Claims[Processing_Type] = "Automated"
+			)
+		formatString: 0
+		lineageTag: 5c960d84-af07-4af2-a6b3-6d3cf0a116be
+
+	measure 'Manual Claims' =
+			
+			CALCULATE(
+			    [Total Claims],
+			    Fact_Claims[Processing_Type] = "Manual"
+			)
+		formatString: 0
+		lineageTag: d2f5c144-434b-4dd2-a3c9-a87cfefce03a
+
+	measure 'Automation Coverage %' =
+			
+			DIVIDE(
+			    [Auto-Processed Claims],
+			    [Total Claims],
+			    0
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: d792a27c-da94-430a-af92-d5f0d233cb3a
+
+	measure 'Processing Accuracy %' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        [Total Claims],
+			        Fact_Claims[Defect_Flag] = "No"
+			    ),
+			    [Total Claims],
+			    0
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: ba8454cd-fd6b-4e58-b674-65abae95997c
+
+	measure 'Defect Rate %' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        [Total Claims],
+			        Fact_Claims[Defect_Flag] = "Yes"
+			    ),
+			    [Total Claims],
+			    0
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 0067884b-16be-4c91-a218-35b44a04a381
+
+	measure 'Average TAT' =
+			
+			AVERAGE(Fact_Claims[TAT_Minutes])
+		formatString: 0.0
+		lineageTag: 41b4630c-54fe-4c14-95c5-036f5482c991
+
+	measure 'Average Automated TAT' =
+			
+			CALCULATE(
+			    [Average TAT],
+			    Fact_Claims[Processing_Type] = "Automated"
+			)
+		lineageTag: a4794364-3f91-460f-b0b5-489b9f3194ba
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Manual TAT' =
+			
+			CALCULATE(
+			    [Average TAT],
+			    Fact_Claims[Processing_Type] = "Manual"
+			)
+		lineageTag: 6ae17d9d-e286-4277-8fba-87a3838349e3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Date
+		formatString: General Date
+		lineageTag: d2157030-49cb-4630-9147-2cf84aa9a098
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 78378995-d9fe-45dc-b061-e5c2cc131b38
+			defaultHierarchy: LocalDateTable_3ae0d517-d14b-4547-a26f-b12ada3adb6f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year = YEAR(Dim_Date[Date])
+		formatString: 0
+		lineageTag: 16d367f1-8d2d-470d-9cd8-d4f62d2d56a4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number' = MONTH(Dim_Date[Date])
+		formatString: 0
+		lineageTag: 4e9ee855-df4a-4d81-b06c-7cbcf6abfc7f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name' = FORMAT(Dim_Date[Date], "MMMM")
+		lineageTag: 80d66c82-cef9-436f-8d72-963a38bc266d
+		summarizeBy: none
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Month' = FORMAT(Dim_Date[Date], "YYYY-MM")
+		dataType: string
+		lineageTag: 1765c0a2-feaa-4a36-9ab8-905d61aec526
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Date = calculated
+		mode: import
+		source =
+				
+				CALENDAR(
+				    MIN(Fact_Claims[Claim_Date]),
+				    MAX(Fact_Claims[Claim_Date])
+				)
+
+	annotation PBI_Id = 15cee4f0b8b9416c98514dbe41a87fd3
+

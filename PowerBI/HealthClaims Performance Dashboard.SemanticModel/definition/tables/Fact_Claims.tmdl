@@ -1,0 +1,162 @@
+table Fact_Claims
+	lineageTag: 4cc9723e-b14c-4b7d-9c4f-b8b1ead4b009
+
+	column Claim_ID
+		dataType: string
+		lineageTag: d255898b-53c4-4a2f-96d8-f289a2ec529f
+		summarizeBy: none
+		sourceColumn: Claim_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Claim_Date
+		dataType: int64
+		formatString: 0
+		lineageTag: 55d24125-a4af-453d-8f26-7e46d51ebd39
+		summarizeBy: none
+		sourceColumn: Claim_Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Claim_Type
+		dataType: string
+		lineageTag: 0ab14c06-e11b-471c-92a1-468aedefa7c5
+		summarizeBy: none
+		sourceColumn: Claim_Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Processing_Type
+		dataType: string
+		lineageTag: fdf46bc7-75c6-4332-814e-297354b1b235
+		summarizeBy: none
+		sourceColumn: Processing_Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Claim_Status
+		dataType: string
+		lineageTag: e49c443d-834b-4598-a51d-97d8b8e6497b
+		summarizeBy: none
+		sourceColumn: Claim_Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Processing_Start
+		dataType: double
+		lineageTag: 703f2464-3139-4882-ab54-9ce4967340eb
+		summarizeBy: sum
+		sourceColumn: Processing_Start
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Processing_End
+		dataType: double
+		lineageTag: 79b3dbd8-5244-4ae3-a9de-60be8d0bf106
+		summarizeBy: sum
+		sourceColumn: Processing_End
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Defect_Flag
+		dataType: string
+		lineageTag: c9d4484f-a12c-4f77-929f-c852f00b22f9
+		summarizeBy: none
+		sourceColumn: Defect_Flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column Defect_Reason
+		dataType: string
+		lineageTag: 7875d584-2d1a-4cf1-a179-6ab8f830729d
+		summarizeBy: none
+		sourceColumn: Defect_Reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column Provider_State
+		dataType: string
+		lineageTag: c50acbe6-374f-48fe-a255-71947a658d50
+		summarizeBy: none
+		sourceColumn: Provider_State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Payer
+		dataType: string
+		lineageTag: 2eb6bdeb-86ff-4ee8-ad44-01bd0f8a5c21
+		summarizeBy: none
+		sourceColumn: Payer
+
+		annotation SummarizationSetBy = Automatic
+
+	column Claim_Amount
+		dataType: double
+		lineageTag: 53916c46-13ed-4e46-be61-58c25aa92ff4
+		summarizeBy: sum
+		sourceColumn: Claim_Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Automation_Rule
+		dataType: string
+		lineageTag: e5308f38-2d81-4f7a-9935-5a47b8957ac7
+		summarizeBy: none
+		sourceColumn: Automation_Rule
+
+		annotation SummarizationSetBy = Automatic
+
+	column Denial_Code
+		dataType: string
+		lineageTag: 8d73be0d-8722-4dab-b55f-d6f9389dc16e
+		summarizeBy: none
+		sourceColumn: Denial_Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Error_Category
+		dataType: string
+		lineageTag: a5f62f39-379c-4a50-90b2-14677c473526
+		summarizeBy: none
+		sourceColumn: Error_Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column TAT_Minutes
+		dataType: double
+		lineageTag: 245c6abd-c3bd-491d-9ebd-b30a304d2650
+		summarizeBy: sum
+		sourceColumn: TAT_Minutes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Fact_Claims = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(File.Contents("C:\Users\User\Downloads\PowerBI\Healthcare_Claims_Automation_Dataset.xlsx"), null, true),
+				  #"Navigation 1" = Source{[Item = "Claims_Data", Kind = "Sheet"]}[Data],
+				    #"Promoted headers" = Table.PromoteHeaders(#"Navigation 1", [PromoteAllScalars = true]),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Promoted headers", {{"Claim_Date", type date}}, "en-IN"),
+				    #"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type with Locale", {{"Processing_Start", type datetime}}, "en-IN"),
+				    #"Changed Type with Locale2" = Table.TransformColumnTypes(#"Changed Type with Locale1", {{"Processing_End", type datetime}}, "en-IN"),
+				    #"Changed Type with Locale3" = Table.TransformColumnTypes(#"Changed Type with Locale2", {{"Claim_Amount", type number}}, "en-IN"),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Changed Type with Locale3",{{"Defect_Reason", type text}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type1", each true),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows",{{"TAT_Minutes", type number}}),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Changed Type", {{"Claim_ID", type text}, {"Claim_Date", Int64.Type}, {"Claim_Type", type text}, {"Processing_Type", type text}, {"Claim_Status", type text}, {"Processing_Start", type number}, {"Processing_End", type number}, {"Defect_Flag", type text}, {"Defect_Reason", type text}, {"Provider_State", type text}, {"Payer", type text}, {"Claim_Amount", type number}, {"Automation_Rule", type text}, {"Denial_Code", type text}, {"Error_Category", type text}, {"TAT_Minutes", type number}}, "en-US")
+				in
+				  #"Changed column type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

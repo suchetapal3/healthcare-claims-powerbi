@@ -1,0 +1,22 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Fact_Claims"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Fact_Claims
+ref table Dim_Date
+ref table DateTableTemplate_99b84427-1f27-4dd5-b2f7-377f96268245
+ref table LocalDateTable_3ae0d517-d14b-4547-a26f-b12ada3adb6f
+
+ref cultureInfo en-US
+

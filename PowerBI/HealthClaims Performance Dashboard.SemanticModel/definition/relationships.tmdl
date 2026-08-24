@@ -1,0 +1,9 @@
+relationship 78378995-d9fe-45dc-b061-e5c2cc131b38
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dim_Date.Date
+	toColumn: LocalDateTable_3ae0d517-d14b-4547-a26f-b12ada3adb6f.Date
+
+relationship d3c2efc4-5db1-0b83-a05a-321db72ebf4b
+	fromColumn: Fact_Claims.Claim_Date
+	toColumn: Dim_Date.Date
+

@@ -43,5 +43,8 @@ Synthetic healthcare claims dataset created
 for educational and portfolio purposes.
 
 ## Dashboard
-Screenshot
-![healthcare-claims-powerbi](Screenshots/Dashboard.png)
+The dashboard provides an interactive view of healthcare claims
+processing performance, including claims volume, automation coverage,
+processing accuracy, defect rate, and turnaround time.
+
+![Healthcare Claims Automation Dashboard](Screenshots/Dashboard.png)

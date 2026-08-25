@@ -47,4 +47,4 @@ The dashboard provides an interactive view of healthcare claims
 processing performance, including claims volume, automation coverage,
 processing accuracy, defect rate, and turnaround time.
 
-![Healthcare Claims Automation Dashboard](./Screenshot/dashboard.png)
+![Healthcare Claims Automation Dashboard](./Screenshot/Dashboard.png)
